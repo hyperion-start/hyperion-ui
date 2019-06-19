@@ -1,9 +1,11 @@
 #!/usr/bin/env python
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from distutils.core import setup
+from catkin_pkg.python_setup import generate_distutils_setup
 
 VERSION = '1.0.0'
 
-setup(
+setup_args = generate_distutils_setup(
     name='hyperion-ui',
     packages=find_packages(),
 
@@ -23,7 +25,7 @@ setup(
                 'urwid = hyperion_user_interfaces.interactiveCLI',
                 'pyqt = hyperion_user_interfaces.hyperGUI'
             ]
-    },
-    include_package_data=True,
-    zip_safe=False
+    }
 )
+
+setup(**setup_args)
