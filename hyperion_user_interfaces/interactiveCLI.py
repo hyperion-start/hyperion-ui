@@ -312,9 +312,9 @@ class StateController(object):
 
             self.host_stats = urwid.Columns([
                 host_object,
-                urwid.Text('4', align='center'),
-                urwid.Text('100%', align='center'),
-                urwid.Text('100%', align='center')
+                urwid.Text(self.cc.host_stats[host][0], align='center'),
+                urwid.Text('%s%%' % self.cc.host_stats[host][1], align='center'),
+                urwid.Text('%s%%' % self.cc.host_stats[host][2], align='center')
             ], 1)
             hosts.append((self.host_stats, ('weight', 1)))
 
@@ -740,7 +740,7 @@ def refresh(_loop, state_controller, _data=None):
     while not event_queue.empty():
         event = event_queue.get_nowait()
 
-        logger.debug("Got event: %s" % event)
+        # logger.debug("Got event: %s" % event)
 
         if isinstance(event, events.CheckEvent):
             logger.debug("Check event - comp %s; state %s" % (event.comp_id, event.check_state))
@@ -789,6 +789,9 @@ def refresh(_loop, state_controller, _data=None):
             state_controller.selected_group = state_controller.groups.keys()[0]
             state_controller.fetch_host_items()
             state_controller.fetch_components()
+        elif isinstance(event, events.StatResponseEvent):
+            state_controller.cc.host_stats[event.hostname] = ['%s' % event.load, '%s' % event.cpu, '%s' % event.mem]
+            state_controller.fetch_host_items()
         else:
             logger.debug("Got unrecognized event of type: %s" % type(event))
 

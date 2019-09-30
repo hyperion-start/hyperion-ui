@@ -554,7 +554,7 @@ class UiMainWindow(object):
     def handle_event_forward_signal(self, event):
         logger = logging.getLogger(__name__)
 
-        logger.debug("Got event: %s" % event)
+        # logger.debug("Got event: %s" % event)
 
         if isinstance(event, events.CheckEvent):
             logger.debug("Check event - comp %s; state %s" % (event.comp_id, event.check_state))
