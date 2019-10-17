@@ -673,7 +673,7 @@ def main(cc, log_file_path):
 
     palette = [
         ('titlebar', 'dark red', ''),
-        ('simple_button', 'light gray,blink', 'black'),
+        ('simple_button', 'light gray', 'black'),
         ('refresh button', 'dark green,bold', ''),
         ('reversed', 'standout', ''),
         ('quit button', 'dark red', ''),
