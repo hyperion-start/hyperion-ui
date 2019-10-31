@@ -5,6 +5,7 @@ from os.path import isfile
 import hyperion.manager
 import hyperion.lib.util.exception as exceptions
 import hyperion.lib.util.events as events
+import hyperion.lib.util.config as config
 
 from hyperion.lib.monitoring.threads import *
 
@@ -117,7 +118,7 @@ class StateController(object):
         self.selected_group = None
         self.groups = {}
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(config.DEFAULT_LOG_LEVEL)
         self.event_queue = event_queue
         self.log_viewer = LogTextWalker(log_file_path, "Main")
         self.tail_log = True
