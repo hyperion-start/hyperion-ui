@@ -56,7 +56,7 @@ class UiMainWindow(object):
 
     def __init__(self, control_center):
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(config.DEFAULT_LOG_LEVEL)
         self.terms = {}
         self.threads = []
         self.animations = {}
