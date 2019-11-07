@@ -598,6 +598,9 @@ class UiMainWindow(object):
                 or isinstance(event, events.DisconnectEvent) \
                 or isinstance(event, events.ServerDisconnectEvent):
             self.handle_host_event(event)
+        elif isinstance(event, events.StatResponseEvent):
+            # Do Nothing for now, this only prevents the log from being flooded by this type of event
+            nop = 0
         else:
             logger.debug("Got unrecognized event of type: %s" % type(event))
     sleep(.7)
