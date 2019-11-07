@@ -10,6 +10,7 @@ from PyQt4 import QtCore, QtGui
 from functools import partial
 from time import sleep
 from os.path import isfile
+import os
 
 is_py2 = sys.version[0] == '2'
 if is_py2:
@@ -382,11 +383,19 @@ class UiMainWindow(object):
             return
 
         if on_localhost:
-            local_file_path = '%s/localhost/component/%s/latest.log' % (config.TMP_LOG_PATH, comp['id'])
+            base_log_dir = '%s/localhost/component/%s/' % (config.TMP_LOG_PATH, comp['id'])
         else:
-            local_file_path = '%s/%s/component/%s/latest.log' % (config.TMP_LOG_PATH, comp['host'], comp['id'])
+            base_log_dir = '%s/%s/component/%s' % (config.TMP_LOG_PATH, comp['host'])
 
-        self.show_log(local_file_path, comp['id'])
+        if os.path.isdir(base_log_dir) and os.listdir(base_log_dir):
+            files = [os.path.join(base_log_dir, f) for f in os.listdir(base_log_dir) if isfile(os.path.join(base_log_dir, f))]
+            times = [os.path.getmtime(f) for f in files]
+            local_file_path = files[times.index(max(times))]
+
+            self.logger.debug("Filepath: %s" % local_file_path)
+            self.show_log(local_file_path, comp['id'])
+        else:
+            self.logger.info("Component '%s' does not have a log yet!" % comp['id'])
 
     def show_log(self, log_path, title):
         """Open log from path in a new xterm window.
