@@ -11,7 +11,7 @@ setup_args = generate_distutils_setup(
 
     version=VERSION,
     install_requires=[
-        'urwid',
+        'urwid==2.0.1',
     ],
 
     description='User interfaces for the Hyperion Launch Engine',
