@@ -7,6 +7,8 @@ recent file change.
 
 ### Added
 - Ability to display real information in the hosts stat columns.
+- In interactive cli logs are opened in an extra terminal, in case a display is
+  available. The log is displayed as text widget otherwise.
 
 ## [1.0.0] - 17.06.2019
 
