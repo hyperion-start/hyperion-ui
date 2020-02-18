@@ -1,6 +1,7 @@
 import urwid
 import threading
 import re
+import subprocess
 from os.path import isfile
 import hyperion.manager
 import hyperion.lib.util.exception as exceptions
@@ -312,6 +313,9 @@ class StateController(object):
             elif state == config.HostState.DISCONNECTED:
                 host_object = urwid.AttrMap(host_object, 'unavailable_host', focus_map='reversed')
 
+            while self.cc.host_stats == None:
+                time.sleep(0.5)
+
             self.host_stats = urwid.Columns([
                 host_object,
                 urwid.Text(self.cc.host_stats[host][0], align='center'),
@@ -585,27 +589,39 @@ class StateController(object):
 
     def show_log_file(self, log_path, title):
         if isfile(log_path):
-            log = self.comp_log_map.get(title, None)
-            if log:
-                self.logger.info("Closing '%s' log" % title)
-                self.additional_content_grid.contents.remove((log, self.additional_content_grid.options()))
-                self.comp_log_map[title] = None
+            if os.environ.get("DISPLAY"):
+                self.show_x_log_file(log_path, title)
             else:
-                self.logger.info("Opening '%s' log" % title)
-                log = urwid.AttrMap(
-                    urwid.LineBox(urwid.BoxAdapter(
-                        urwid.ListBox(
-                            LogTextWalker(log_path, title)),
-                            10
-                        ), '%s Log' % title
-                    ),
-                    None,
-                    focus_map='simple_button'
-                )
-                self.comp_log_map[title] = log
-                self.additional_content_grid.contents.append((log, self.additional_content_grid.options()))
+                self.show_cli_log_file(log_path, title)
         else:
             self.logger.error("Log file '%s' does not exist!" % log_path)
+
+    def show_x_log_file(self, log_path, title):
+        self.logger.debug("Opening xterm with log")
+        cmd = "tail -n +1 -F %s" % log_path
+        subprocess.Popen(['xterm', '-fg', 'white', '-bg', 'darkblue', '-title', '%s log' % title,
+                            '-e', '%s' % cmd], stdout=subprocess.PIPE)
+
+    def show_cli_log_file(self, log_path, title):
+        log = self.comp_log_map.get(title, None)
+        if log:
+            self.logger.info("Closing '%s' log" % title)
+            self.additional_content_grid.contents.remove((log, self.additional_content_grid.options()))
+            self.comp_log_map[title] = None
+        else:
+            self.logger.info("Opening '%s' log" % title)
+            log = urwid.AttrMap(
+                urwid.LineBox(urwid.BoxAdapter(
+                    urwid.ListBox(
+                        LogTextWalker(log_path, title)),
+                        10
+                    ), '%s Log' % title
+                ),
+                None,
+                focus_map='simple_button'
+            )
+            self.comp_log_map[title] = log
+            self.additional_content_grid.contents.append((log, self.additional_content_grid.options()))
 
     def handle_shutdown(self, button, full=False):
         self.full_shutdown = full
