@@ -575,7 +575,7 @@ class StateController(object):
         if on_localhost:
             base_log_dir = '%s/localhost/component/%s/' % (config.TMP_LOG_PATH, comp['id'])
         else:
-            base_log_dir = '%s/%s/component/%s' % (config.TMP_LOG_PATH, comp['host'])
+            base_log_dir = '%s/%s/component/%s' % (config.TMP_LOG_PATH, comp['host'], comp['id'])
 
         if os.path.isdir(base_log_dir) and os.listdir(base_log_dir):
             files = [os.path.join(base_log_dir, f) for f in os.listdir(base_log_dir) if isfile(os.path.join(base_log_dir, f))]
