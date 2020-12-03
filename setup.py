@@ -1,11 +1,19 @@
 #!/usr/bin/env python
-from setuptools import find_packages
-from distutils.core import setup
-from catkin_pkg.python_setup import generate_distutils_setup
+IS_CATKIN = False
+
+try:
+    from distutils.core import setup
+    from catkin_pkg.python_setup import generate_distutils_setup
+    import selectors
+    from setuptools import find_packages
+    IS_CATKIN = True
+except ImportError:
+    from setuptools import setup, find_packages
+    pass
 
 VERSION = '1.0.0'
 
-setup_args = generate_distutils_setup(
+setup_args = dict(
     name='hyperion-ui',
     packages=find_packages(),
 
@@ -27,5 +35,10 @@ setup_args = generate_distutils_setup(
             ]
     }
 )
+
+if IS_CATKIN:
+    setup_args = generate_distutils_setup(
+        **setup_args
+    )
 
 setup(**setup_args)
