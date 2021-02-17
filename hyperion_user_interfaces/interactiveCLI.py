@@ -590,7 +590,11 @@ class StateController(object):
     def show_log_file(self, log_path, title):
         if isfile(log_path):
             if os.environ.get("DISPLAY"):
-                self.show_x_log_file(log_path, title)
+                try:
+                    self.show_x_log_file(log_path, title)
+                except OSError as e:
+                    self.logger.warn("OSERROR, is xterm installed?")
+                    self.show_cli_log_file(log_path, title)
             else:
                 self.show_cli_log_file(log_path, title)
         else:
