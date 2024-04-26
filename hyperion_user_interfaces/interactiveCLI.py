@@ -815,7 +815,7 @@ def refresh(_loop, state_controller, _data=None):
             # TODO: Show custom popup with option to quit or cancel
         elif isinstance(event, events.ConfigReloadEvent):
             state_controller.load_groups_from_config()
-            state_controller.selected_group = state_controller.groups.keys()[0]
+            state_controller.selected_group = list(state_controller.groups.keys())[0]
             state_controller.fetch_host_items()
             state_controller.fetch_components()
         elif isinstance(event, events.StatResponseEvent):
