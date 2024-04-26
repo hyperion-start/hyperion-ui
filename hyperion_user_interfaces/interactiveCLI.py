@@ -383,7 +383,7 @@ class StateController(object):
                         "state: %s" % config.SHORT_STATE_DESCRIPTION.get(config.CheckState.UNKNOWN))
 
                 comps.append((urwid.Columns([
-                    ('pack', urwid.AttrMap(SimpleButton(c['id']), 'important', focus_map='reversed')),
+                    urwid.AttrMap(SimpleButton(c['id']), 'important', focus_map='reversed'),
                     state,
                     SimpleButton('Start', self.handle_start, c),
                     SimpleButton('Stop', self.handle_stop, c),
@@ -404,8 +404,7 @@ class StateController(object):
                                 "state: %s" % config.SHORT_STATE_DESCRIPTION.get(config.CheckState.UNKNOWN))
 
                         comps.append((urwid.Columns([
-                            urwid.AttrMap(SimpleButton(c['id']), 'important',
-                                          focus_map='reversed'),
+                            urwid.AttrMap(SimpleButton(c['id']), 'important', focus_map='reversed'),
                             state,
                             SimpleButton('Start', self.handle_start, c),
                             SimpleButton('Stop', self.handle_stop, c),
