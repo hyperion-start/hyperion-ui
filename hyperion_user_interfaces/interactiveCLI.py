@@ -82,7 +82,7 @@ class LogTextWalker(urwid.SimpleFocusListWalker):
     def _get_at_pos(self, pos):
         """Return a widget for the line number passed."""
 
-        if pos < 0:
+        if pos is None or pos < 0:
             # line 0 is the start of the file, no more above
             return None, None
 
