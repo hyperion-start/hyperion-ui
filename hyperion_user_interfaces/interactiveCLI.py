@@ -643,7 +643,7 @@ class StateController(object):
         failed = False
         start_all_popup_content = [
             urwid.Divider('='),
-            urwid.Text(('titlebar', u'Start %s Report' % event.component), "center"),
+            urwid.Text(('titlebar', u'Start %s Report' % event.comp_id), "center"),
             urwid.Divider('='),
         ]
 
@@ -661,14 +661,14 @@ class StateController(object):
         if failed:
             start_all_popup_content.extend([
                 urwid.Divider(),
-                urwid.AttrMap(urwid.Text('Starting %s failed!' % event.component, "center"), 'simple_button'),
+                urwid.AttrMap(urwid.Text('Starting %s failed!' % event.comp_id, "center"), 'simple_button'),
                 urwid.Divider()
             ])
             start_all_popup_content.extend(fail_popup_content)
         else:
             start_all_popup_content.extend([
                 urwid.Divider(),
-                urwid.AttrMap(urwid.Text('Starting %s complete!' % event.component, "center"), 'simple_button'),
+                urwid.AttrMap(urwid.Text('Starting %s complete!' % event.comp_id, "center"), 'simple_button'),
                 urwid.Divider()
             ])
 
