@@ -3,11 +3,11 @@ import threading
 import re
 import subprocess
 from os.path import isfile
-import hyperion.manager
 import hyperion.lib.util.exception as exceptions
 import hyperion.lib.util.events as events
 import hyperion.lib.util.config as config
 import os
+import time
 
 from hyperion.lib.monitoring.threads import *
 
@@ -306,11 +306,11 @@ class StateController(object):
         for host in self.cc.host_states:
             host_object = SimpleButton(host, self.handle_host_clicked, user_data=host)
             state = self.cc.host_states[host]
-            if state == config.HostState.CONNECTED:
+            if state == config.HostConnectionState.CONNECTED:
                 host_object = urwid.AttrMap(host_object, 'host', focus_map='reversed')
-            elif state == config.HostState.SSH_ONLY:
+            elif state == config.HostConnectionState.SSH_ONLY:
                 host_object = urwid.AttrMap(host_object, 'partly_available_host', focus_map='reversed')
-            elif state == config.HostState.DISCONNECTED:
+            elif state == config.HostConnectionState.DISCONNECTED:
                 host_object = urwid.AttrMap(host_object, 'unavailable_host', focus_map='reversed')
 
             while self.cc.host_stats == None:
@@ -515,7 +515,7 @@ class StateController(object):
     def handle_host_clicked(self, button, host):
         self.logger.info("Clicked host '%s'" % host)
         state = self.cc.host_states[host]
-        if state and state == config.HostState.CONNECTED:
+        if state and state == config.HostConnectionState.CONNECTED:
             if self.cc.is_localhost(host):
                 server_file_path = '%s/localhost/server/%s.log' % (config.TMP_LOG_PATH, self.cc.config['name'])
                 slave_file_path = '%s/localhost/slave/%s.log' % (config.TMP_LOG_PATH, self.cc.config['name'])
