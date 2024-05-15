@@ -303,14 +303,13 @@ class StateController(object):
         :return None
         """
         hosts = []
-        for host in self.cc.host_states:
+        for host, state in self.cc.host_states.items():
             host_object = SimpleButton(host, self.handle_host_clicked, user_data=host)
-            state = self.cc.host_states[host]
-            if state == config.HostConnectionState.CONNECTED:
+            if state[1] == config.HostConnectionState.CONNECTED:
                 host_object = urwid.AttrMap(host_object, 'host', focus_map='reversed')
-            elif state == config.HostConnectionState.SSH_ONLY:
+            elif state[1] == config.HostConnectionState.SSH_ONLY:
                 host_object = urwid.AttrMap(host_object, 'partly_available_host', focus_map='reversed')
-            elif state == config.HostConnectionState.DISCONNECTED:
+            elif state[1] == config.HostConnectionState.DISCONNECTED:
                 host_object = urwid.AttrMap(host_object, 'unavailable_host', focus_map='reversed')
 
             while self.cc.host_stats == None:
@@ -318,9 +317,9 @@ class StateController(object):
 
             self.host_stats = urwid.Columns([
                 host_object,
-                urwid.Text(self.cc.host_stats[host][0], align='center'),
-                urwid.Text('%s%%' % self.cc.host_stats[host][1], align='center'),
-                urwid.Text('%s%%' % self.cc.host_stats[host][2], align='center')
+                urwid.Text(f'{self.cc.host_stats[host][0]}', align='center'),
+                urwid.Text(f'{self.cc.host_stats[host][1]}%%' , align='center'),
+                urwid.Text(f'{self.cc.host_stats[host][2]}%%' , align='center')
             ], 1)
             hosts.append((self.host_stats, ('weight', 1)))
 
@@ -514,8 +513,8 @@ class StateController(object):
 
     def handle_host_clicked(self, button, host):
         self.logger.info("Clicked host '%s'" % host)
-        state = self.cc.host_states[host]
-        if state and state == config.HostConnectionState.CONNECTED:
+        state = self.cc.host_states.get(host)
+        if state and state[1] == config.HostConnectionState.CONNECTED:
             if self.cc.is_localhost(host):
                 server_file_path = '%s/localhost/server/%s.log' % (config.TMP_LOG_PATH, self.cc.config['name'])
                 slave_file_path = '%s/localhost/slave/%s.log' % (config.TMP_LOG_PATH, self.cc.config['name'])
@@ -818,7 +817,7 @@ def refresh(_loop, state_controller, _data=None):
             state_controller.fetch_host_items()
             state_controller.fetch_components()
         elif isinstance(event, events.StatResponseEvent):
-            state_controller.cc.host_stats[event.hostname] = ['%s' % event.load, '%s' % event.cpu, '%s' % event.mem]
+            state_controller.cc.host_stats[event.hostname] = [f'{event.load:.4f}', f'{event.cpu:.2f}', f'{event.mem:.2f}']
             state_controller.fetch_host_items()
         else:
             logger.debug("Got unrecognized event of type: %s" % type(event))
