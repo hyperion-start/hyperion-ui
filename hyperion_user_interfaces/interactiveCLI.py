@@ -10,6 +10,7 @@ import os
 import time
 
 from hyperion.lib.monitoring.threads import *
+from hyperion.manager import ControlCenter
 
 
 is_py2 = sys.version[0] == '2'
@@ -764,6 +765,13 @@ def refresh(_loop, state_controller, _data=None):
                 log.set_focus(len(log.lines)-1)
 
     event_queue = state_controller.event_queue
+
+    # Standalone case get slave notifications
+    if isinstance(state_controller.cc, ControlCenter):
+        if state_controller.cc.slave_server is not None:
+            while not state_controller.cc.slave_server.notify_queue.empty():
+                event_queue.put(state_controller.cc.slave_server.notify_queue.get_nowait())
+    
     while not event_queue.empty():
         event = event_queue.get_nowait()
 
