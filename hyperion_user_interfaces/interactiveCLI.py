@@ -318,8 +318,8 @@ class StateController(object):
             self.host_stats = urwid.Columns([
                 host_object,
                 urwid.Text(f'{self.cc.host_stats[host][0]}', align='center'),
-                urwid.Text(f'{self.cc.host_stats[host][1]}%%' , align='center'),
-                urwid.Text(f'{self.cc.host_stats[host][2]}%%' , align='center')
+                urwid.Text(f'{self.cc.host_stats[host][1]}%' , align='center'),
+                urwid.Text(f'{self.cc.host_stats[host][2]}%' , align='center')
             ], 1)
             hosts.append((self.host_stats, ('weight', 1)))
 
