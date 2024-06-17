@@ -74,10 +74,13 @@ class LogTextWalker(urwid.SimpleFocusListWalker):
             next_line = next_line[:-1]
 
             # Remove ANSI escape sequences from tty stdout
-            ansi_escape = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -\/]*[@-~]')
+            ansi_escape = re.compile(r'(\x9B\[[0-?]*[ -\/]*[@-~])|\x1b\[0m')
             next_line = ansi_escape.sub('', next_line)
 
-            self.lines.append(urwid.Text(next_line))
+            if next_line.startswith('\x1b'):
+                self.lines.append(urwid.Text((next_line[:8], next_line[8:])))
+            else:
+                self.lines.append(urwid.Text(next_line))
             self.append(urwid.Text(next_line))
 
     def _get_at_pos(self, pos):
@@ -313,7 +316,7 @@ class StateController(object):
             elif state[1] == config.HostConnectionState.DISCONNECTED:
                 host_object = urwid.AttrMap(host_object, 'unavailable_host', focus_map='reversed')
 
-            while self.cc.host_stats == None:
+            while self.cc.host_stats == None or self.cc.host_stats.get(host) == None:
                 time.sleep(0.5)
 
             self.host_stats = urwid.Columns([
@@ -722,6 +725,12 @@ def main(cc, log_file_path):
         ('running', 'white', 'dark green'),
         ('other', 'white', 'brown'),
         ('force_mode', 'white', 'dark red'),
+
+        ('\x1b[32;20m', 'dark green', ''),
+        ('\x1b[33;20m', 'yellow', ''),
+        ('\x1b[31;20m', 'light red', ''),
+        ('\x1b[31;1m', 'dark red', ''),
+        ('\x1b[38;20m', '', ''),
     ]
 
     global main_loop
