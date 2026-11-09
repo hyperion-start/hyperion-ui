@@ -18,7 +18,7 @@ setup_args = dict(
 
     version=VERSION,
     install_requires=[
-        'urwid==2.0.1',
+        'urwid==4.0.7',
     ],
 
     description='User interfaces for the Hyperion Launch Engine',
